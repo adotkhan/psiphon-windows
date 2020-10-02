@@ -1788,3 +1788,11 @@ float ConvertDpiToScaling(UINT dpi)
     const UINT defaultDPI = 96;
     return dpi / (float)defaultDPI;
 }
+
+// This function might be easily convertible to support wstring, but it would need testing.
+// From https://stackoverflow.com/a/17976541/729729
+std::string trim(const std::string& s)
+{
+    auto wsfront = std::find_if_not(s.begin(), s.end(), [](int c) {return std::isspace(c); });
+    return std::string(wsfront, std::find_if_not(s.rbegin(), std::string::const_reverse_iterator(wsfront), [](int c) {return std::isspace(c); }).base());
+}
