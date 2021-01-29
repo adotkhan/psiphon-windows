@@ -1050,14 +1050,14 @@ void ConnectionManager::ActiveAuthorizationIDs(
         for (const auto& p : activePurchases) {
             ss << p.transaction_class + ":" + p.distinguisher + "; ";
         }
-        my_print(NOT_SENSITIVE, false, _T("%hs"), ss.str().c_str());
+        my_print(NOT_SENSITIVE, true, _T("%hs"), ss.str().c_str());
     }
 
     // Items in inactiveIDs are invalid or expired, so we should modify our
     // locally stored set of purchases.
     vector<psicash::TransactionID> purchasesToRemove;
     for (const auto& p : inactivePurchases) {
-        my_print(NOT_SENSITIVE, false, _T("Removing expired purchase: class:%hs; distinguisher:%hs; expiry:%hs"), p.transaction_class.c_str(), p.distinguisher.c_str(), p.authorization->expires.ToISO8601().c_str());
+        my_print(NOT_SENSITIVE, true, _T("Removing expired purchase: class:%hs; distinguisher:%hs; expiry:%hs"), p.transaction_class.c_str(), p.distinguisher.c_str(), p.authorization->expires.ToISO8601().c_str());
         purchasesToRemove.push_back(p.id);
     }
 
@@ -1065,7 +1065,7 @@ void ConnectionManager::ActiveAuthorizationIDs(
     if (!res)
     {
         // We'll log, but not take any other action
-        my_print(NOT_SENSITIVE, false, _T("%s: RemovePurchases failed (%d): %hs"), __TFUNCTION__, GetLastError(), res.error().ToString().c_str());
+        my_print(NOT_SENSITIVE, true, _T("%s: RemovePurchases failed (%d): %hs"), __TFUNCTION__, GetLastError(), res.error().ToString().c_str());
     }
 
     // Our active purchase state changed, so update the UI.
@@ -1201,9 +1201,9 @@ bool ConnectionManager::DoSendFeedback(LPCWSTR feedbackJSON)
                     email,
                     surveyJSON,
                     sendDiagnosticInfo);
-        
+
         unique_ptr<FeedbackUploadWorker> feedbackUpload;
- 
+
         // Kick off the feedback upload and poll for it to complete. Interrupt
         // the operation if the VPN is connecting or disconnecting, and retry
         // when it is connected or disconnected again.
@@ -1212,7 +1212,7 @@ bool ConnectionManager::DoSendFeedback(LPCWSTR feedbackJSON)
 
             bool vpnModeStarted = g_connectionManager.VPNModeStarted();
 
-            if (feedbackUpload == NULL && vpnModeStarted && 
+            if (feedbackUpload == NULL && vpnModeStarted &&
                 (GetState() == CONNECTION_MANAGER_STATE_STOPPED || GetState() == CONNECTION_MANAGER_STATE_CONNECTED))
             {
                 // Start the upload in VPN mode if the transport is stopped, or
@@ -1265,7 +1265,7 @@ bool ConnectionManager::DoSendFeedback(LPCWSTR feedbackJSON)
                     success = feedbackUpload->UploadSuccessful();
                     break;
                 }
-                else if (feedbackUpload->UploadStopped() || feedbackUpload->IsVPNMode() != vpnModeStarted) 
+                else if (feedbackUpload->UploadStopped() || feedbackUpload->IsVPNMode() != vpnModeStarted)
                 {
                     // Worker has been stopped by the stop signal going high or
                     // the transport mode has changed to, or from, VPN mode. In
