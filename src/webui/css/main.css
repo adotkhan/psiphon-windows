@@ -7030,6 +7030,9 @@ body[dir="rtl"] #psicash-block > div .psicash-title-balance .psicash-balance-del
   position: relative;
   font-size: 40px;
 }
+#psicash-pane hr {
+  margin: 5px 0 -5px 0;
+}
 #psicash-pane .width-limiter {
   max-width: 600px;
   margin: auto;

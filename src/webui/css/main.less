@@ -1171,6 +1171,13 @@ img.coin {
 
 // This is the PsiCash tab content
 #psicash-pane {
+  hr {
+    // We want to tighten up the space around HRs, so the content doesn't get spread out
+    // too much and the pane doesn't require too much scrolling. (The negative bottom
+    // border pulls up the header elements that follow.)
+    margin: 5px 0 -5px 0;
+  }
+
   .width-limiter {
     max-width: 600px;
     margin: auto;
