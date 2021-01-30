@@ -695,15 +695,18 @@
                 <div class="row-fluid js-hide-if-boosting">
                   <div class="span12 speed-limit text-center">
                     <div class="width-limiter">
-                      <h3 data-i18n="psicash#pane-speed-port-limits-head">Speed and Port Limits</h3>
-                      <p data-i18n="psicash#pane-speed-port-limits-body">Without active Speed Boost, your speed is limited and some internet traffic is not supported. Activate Speed Boost with PsiCash to unlock the full potential of your Psiphon experience.</p>
+                      <div class="psicash-pane__speed-limit__collapse collapse in">
+                        <h3 data-i18n="psicash#pane-speed-port-limits-head">Speed and Port Limits</h3>
+                        <p data-i18n="psicash#pane-speed-port-limits-body">Without active Speed Boost, your speed is limited and some internet traffic is not supported. Activate Speed Boost with PsiCash to unlock the full potential of your Psiphon experience.</p>
+                      </div>
                       <span class="badge speed-slow js-hide-if-fast">
                         <table>
                           <tr>
-                            <td><span data-i18n="[html]psicash#psiphon-speed">Psiphon<br>Speed</span></td>
+                            <td><span data-i18n="psicash#psiphon-speed-nobreak">Psiphon speed</span></td>
                             <td><span><img src="turtle.png"></span></td>
                           </tr>
                         </table>
+                        <button class="psicash-pane__speed-limit__collapser btn btn-link icon icon-chevron-up-circle" data-toggle="collapse" data-target=".psicash-pane__speed-limit__collapse"></button>
                       </span>
                     </div>
                   </div>

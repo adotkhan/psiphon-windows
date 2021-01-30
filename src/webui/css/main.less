@@ -1405,8 +1405,50 @@ img.coin {
     }
   }
 
-  .speed-limit .badge {
-    font-size: 20px;
+  .speed-limit {
+    .badge {
+      font-size: 20px;
+
+      img {
+        // The speed limit badge on the pane is one line rather than two, so the image should be smaller
+        height: 1.5em;
+      }
+
+      table {
+        display: inline-block;
+        .ie7-inline-block();
+      }
+
+      .psicash-pane__speed-limit__collapser {
+        text-decoration: none;  // undo btn styling
+        text-shadow: none;      // undo btn styling
+        margin-top: 4px;
+        color: darken(@white, 10%);
+        &:hover {
+          color: @white;
+        }
+
+        body[dir="ltr"] & {
+          .pull-right();
+        }
+        body[dir="rtl"] & {
+          .pull-left();
+        }
+      }
+    }
+
+    .psicash-pane__speed-limit__collapse {
+      // When the title and text above the badge are collapsed, we lose the top margin of
+      // the header and so the badge is too high up. So we need to add and remove a top
+      // margin when we collpase and expand.
+      // To avoid jumping around, use a transition for the top margin. But this overrides
+      // the Bootstrap .collapse transition (found in component-animations.less), so we
+      // need to copy it here as well.
+      .transition(~"height 0.35s ease, margin-top 0.35s ease");
+      &:not(.in) {
+        margin-top: 20px;
+      }
+    }
   }
 }
 

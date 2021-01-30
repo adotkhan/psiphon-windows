@@ -2045,6 +2045,25 @@
         );
       }
     });
+
+    // Initialize the collapsible speed limit info (persisted in a cookie)
+    const $speedLimitCollapser = $('.psicash-pane__speed-limit__collapser');
+    const $speedLimitCollapserTarget = $($speedLimitCollapser.data('target'));
+    $speedLimitCollapserTarget.on('hidden', () => {
+      $speedLimitCollapser.removeClass('icon-chevron-up-circle').addClass('icon-chevron-down-circle');
+      setCookie('SpeedLimitCollapsed', true);
+    }).on('shown', () => {
+      $speedLimitCollapser.addClass('icon-chevron-up-circle').removeClass('icon-chevron-down-circle');
+      setCookie('SpeedLimitCollapsed', false);
+    });
+    // Altering the collapsed state before the pane is shown seems to result in
+    // things not working afterwards. So we're going to wait until the first time
+    // the pane is shown to get into the correct state.
+    $('.nav-tabs a[href="#psicash-pane"][data-toggle="tab"]').one('shown', () => {
+      if (getCookie('SpeedLimitCollapsed')) {
+        $speedLimitCollapserTarget.collapse('hide');
+      }
+    });
   });
 
   /**
@@ -3269,7 +3288,19 @@
       'info',
       null, null, () => {
         if (!$('#psicash-tab').hasClass('hidden')) {
-          switchToTab('#psicash-tab');
+          // We're going to switch to the PsiCash tab, and ensure that it is showing
+          // (i.e., not collapsing) the porting limiting info.
+          // Setting the cookie here is a bit of hack. If this is the first visit to the
+          // PsiCash pane, it will help prevent the speed limit from collapsing and then
+          // re-expanding (which looks dumb).
+          setCookie('SpeedLimitCollapsed', false);
+          switchToTab('#psicash-tab', () => {
+            const $speedLimitCollapser = $('.psicash-pane__speed-limit__collapser');
+            const $speedLimitCollapserTarget = $($speedLimitCollapser.data('target'));
+            if (!$speedLimitCollapserTarget.hasClass('in')) {
+              $speedLimitCollapserTarget.collapse('show');
+            }
+          });
         }
 
         /* Before we had the PsiCash pane, we would wiggle the bottom-left PsiCash block.
@@ -3345,7 +3376,7 @@
     else {
       // Target tab not already showing. Switch to it before expanding and scrolling.
       if (callback) {
-        $tab.find('[data-toggle="tab"]').one('show', callback);
+        $tab.find('[data-toggle="tab"]').one('shown', callback);
       }
       $tab.find('[data-toggle="tab"]').tab('show');
     }

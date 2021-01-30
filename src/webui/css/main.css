@@ -7223,6 +7223,39 @@ html.no-csstransforms #psicash-pane .speed-boost-buttons .speed-boost-button .sp
 #psicash-pane .speed-limit .badge {
   font-size: 20px;
 }
+#psicash-pane .speed-limit .badge img {
+  height: 1.5em;
+}
+#psicash-pane .speed-limit .badge table {
+  display: inline-block;
+  *display: inline;
+  /* IE7 inline-block hack */
+  *zoom: 1;
+}
+#psicash-pane .speed-limit .badge .psicash-pane__speed-limit__collapser {
+  text-decoration: none;
+  text-shadow: none;
+  margin-top: 4px;
+  color: #e6e6e6;
+}
+#psicash-pane .speed-limit .badge .psicash-pane__speed-limit__collapser:hover {
+  color: #fff;
+}
+body[dir="ltr"] #psicash-pane .speed-limit .badge .psicash-pane__speed-limit__collapser {
+  float: right;
+}
+body[dir="rtl"] #psicash-pane .speed-limit .badge .psicash-pane__speed-limit__collapser {
+  float: left;
+}
+#psicash-pane .speed-limit .psicash-pane__speed-limit__collapse {
+  -moz-transition: height 0.35s ease, margin-top 0.35s ease;
+  -webkit-transition: height 0.35s ease, margin-top 0.35s ease;
+  -o-transition: height 0.35s ease, margin-top 0.35s ease;
+  transition: height 0.35s ease, margin-top 0.35s ease;
+}
+#psicash-pane .speed-limit .psicash-pane__speed-limit__collapse:not(.in) {
+  margin-top: 20px;
+}
 .speed-limit .badge,
 .speed-limit.badge {
   display: block;
