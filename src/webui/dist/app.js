@@ -458,7 +458,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
       if ($activeItem) {
-        $('#EgressRegionCombo .btn span.flag').attr('data-i18n', $activeItem.find('a').data('i18n')).attr('class', $activeItem.find('a').attr('class')).text($activeItem.find('a').text());
+        // Most of the list items have an `a` element as an immediate child, but the "Best
+        // Performance" element has its `data-i18n` attribute on a `strong` element under
+        // the `a` element.
+        $('#EgressRegionCombo .btn span.flag').attr('data-i18n', $activeItem.find('[data-i18n]').data('i18n')).attr('class', $activeItem.find('a').attr('class')).text($activeItem.find('a').text());
       }
     }); // If the label is clicked, jump to the Egress Region settings section
 

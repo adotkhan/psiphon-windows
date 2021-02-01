@@ -474,7 +474,7 @@
     // When an item in the combo is clicked, make the settings code do the work.
     $('#EgressRegionCombo ul a').click(function egressRegionComboSetup_EgressRegionCombo_click(e) {
       e.preventDefault();
-      var region = $(this).parents('[data-region]').data('region');
+      const region = $(this).parents('[data-region]').data('region');
       if (!region) {
         return;
       }
@@ -488,14 +488,14 @@
 
     // Have the combobox track the state of the control in the settings pane.
     $('#EgressRegion').on('change', function egressRegionComboSetup_EgressRegion_change() {
-      var $activeItem;
+      let $activeItem;
       // Copy the relevant classes to the combo items from the settings items.
-      var $regionItems = $('#EgressRegion li');
-      for (var i = 0; i < $regionItems.length; i++) {
-        var $regionItem = $regionItems.eq(i);
-        var region = $regionItem.data('region');
-        var hidden = $regionItem.hasClass('hidden');
-        var active = $regionItem.hasClass('active');
+      const $regionItems = $('#EgressRegion li');
+      for (let i = 0; i < $regionItems.length; i++) {
+        const $regionItem = $regionItems.eq(i);
+        const region = $regionItem.data('region');
+        const hidden = $regionItem.hasClass('hidden');
+        const active = $regionItem.hasClass('active');
 
         $('#EgressRegionCombo li[data-region="' + region + '"]')
           .toggleClass('hidden', hidden)
@@ -508,8 +508,11 @@
 
       // Update the button
       if ($activeItem) {
+        // Most of the list items have an `a` element as an immediate child, but the "Best
+        // Performance" element has its `data-i18n` attribute on a `strong` element under
+        // the `a` element.
         $('#EgressRegionCombo .btn span.flag')
-          .attr('data-i18n', $activeItem.find('a').data('i18n'))
+          .attr('data-i18n', $activeItem.find('[data-i18n]').data('i18n'))
           .attr('class', $activeItem.find('a').attr('class'))
           .text($activeItem.find('a').text());
       }
