@@ -4133,6 +4133,10 @@
    * @param {!PsiCashCommandPurchase} command
    */
   function testPurchaseResponse(command) {
+    if (!command.distinguisher || !command.expectedPrice || !command.transactionClass) {
+      alert('Bad command input to testPurchaseResponse: ' + JSON.stringify(command));
+    }
+
     var resp = $('#debug-PsiCashSpeedBoost-response').val();
 
     /** @type {PsiCashPurchaseResponse} */
