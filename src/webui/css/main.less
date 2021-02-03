@@ -1112,10 +1112,16 @@ img.coin {
         &.label {
           // Make labels larger and give them more space (this currently is for the
           // "Starting Speed Boost" label and may be too broad).
-          padding: 1em;
           white-space: initial;
-          font-size: 1.2em;
-          line-height: 1.1em;
+          padding: 0.7em;
+          font-size: 1em;
+          line-height: 1.2em;
+
+          // The success label background is darker than we'd like (and there's no harm
+          // in using the button background colour, since our corner labels are clickable).
+          &-success {
+            background-color: @btnSuccessBackground;
+          }
         }
       }
     }

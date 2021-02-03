@@ -6982,10 +6982,13 @@ body[dir="rtl"] #psicash-block > div .psicash-title-balance .psicash-balance-del
   border-bottom-right-radius: 10px;
 }
 #psicash-block > div .psicash-corner-cluster .psicash-corner-cluster-item.label {
-  padding: 1em;
   white-space: initial;
-  font-size: 1.2em;
-  line-height: 1.1em;
+  padding: 0.7em;
+  font-size: 1em;
+  line-height: 1.2em;
+}
+#psicash-block > div .psicash-corner-cluster .psicash-corner-cluster-item.label-success {
+  background-color: #51A253;
 }
 #psicash-block > div .psicash-buy-speedboost {
   display: block;
