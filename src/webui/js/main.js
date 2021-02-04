@@ -211,7 +211,19 @@
                 .css(!g_isRTL ? 'margin-right' : 'margin-left', 0);
   }
 
-  function updateDpiScaling(dpiScaling, andResizeContent/*=true*/) {
+  /**
+   * Take steps necessary to adapt to changing screen DPI (like an intial scaling other
+   * than 1.0, or when the app gets dragged between monitors with different scaling).
+   * @param {string} dpiScaling Contains a floating point number, like "1.0", "1.2", "2.5"
+   * @param {boolean} andResizeContent Indicates whether a full resize should occur (default true)
+   */
+  function updateDpiScaling(dpiScaling, andResizeContent=true) {
+    if (updateDpiScaling.lastDpiScaling === dpiScaling) {
+      // We only do this processing when the scaling actually changes.
+      return;
+    }
+    updateDpiScaling.lastDpiScaling = dpiScaling;
+
     DEBUG_LOG('updateDpiScaling: ' + dpiScaling);
     g_initObj.Config.DpiScaling = dpiScaling;
 
@@ -285,6 +297,49 @@
             });
           }
         });
+    }
+
+    // Media query breakpoints need to be scaled accoring to the DPI scaling. This happens
+    // automatically in the browser, but not in our app's HTML control.
+    if (Modernizr.mediaqueries) {
+      const mqRegexp = /^([^0-9]+)([0-9]+)([^0-9]+)$/;
+
+      for (let i = 0; i < document.styleSheets.length; i++) {
+        const ss = document.styleSheets[i];
+
+        // In the IE browser -- but not the app! -- the style sheets created by our data
+        // URI CSS (`data:text/css;base64`, see main.html) will cause an "access denied"
+        // exception when we try to access the `cssRules` property. So we'll test for that.
+        try {
+          const test = ss.cssRules.length;
+        }
+        catch (e) {
+          continue;
+        }
+
+        for (let j = 0; j < ss.cssRules.length; j++) {
+          const rule = ss.cssRules[j];
+          if (!rule.media) {
+            // Not a media query rule
+            continue;
+          }
+
+          // Before modifying the media query, we need to make a backup of the
+          // original (if we haven't already).
+          if (!rule.media.mediaText__backup) {
+            rule.media.mediaText__backup = rule.media.mediaText;
+          }
+
+          const mediaTextSplit = rule.media.mediaText.split(' and ');
+          for (let k = 0; k < mediaTextSplit.length; k++) {
+            mediaTextSplit[k] = mediaTextSplit[k].replace(mqRegexp, function(match, pre, num, post) {
+              return `${pre}${Math.round(num * dpiScaling)}${post}`;
+            });
+          }
+
+          rule.media.mediaText = mediaTextSplit.join(' and ');
+        }
+      }
     }
 
     if (andResizeContent !== false) {
@@ -3554,6 +3609,12 @@
     }
   }
 
+  /**
+   * Gets the version of IE rendering the view.
+   * @returns {Number|boolean} Returns false if the current browser/HTML control is not
+   *                           Internet Explorer-based, otherwise returns the integer
+   *                           version of the IE that the view is based on.
+   */
   function getIEVersion() {
     // This is complicated by the fact that the MSHTML control uses a different
     // user agent string than browsers do.

@@ -416,7 +416,7 @@
     "description": "Text encouraging the user to buy PsiCash (with real money). The word 'PsiCash' must not be translated or transliterated."
   },
   "psicash#pane-speed-boost-cta": {
-    "message": "‮Iuɔɹǝɐsǝ‬ ‮ʎonɹ‬ ‮Ԁsıdɥou‬ ‮sdǝǝp‬ ‮ʍıʇɥ‬ ‮Sdǝǝp‬ ‮Ԑoosʇ‬!",
+    "message": "‮Iuɔɹǝɐsǝ‬ ‮ʎonɹ‬ ‮Ԁsıdɥou‬ ‮sdǝǝp‬ ‮ʍıʇɥ‬ ‮Sdǝǝp‬&nbsp;‮Ԑoosʇ‬!",
     "description": "Text encouraging the user to purchase Speed Boost. 'Psiphon' must not be translated/transliterated. 'Speed Boost' is a reward that can be purchased with PsiCash credit. It provides unlimited network connection speed through Psiphon. Other words that can be used to help with translation are: 'turbo' (like cars), 'accelerate', 'warp speed', 'blast off', or anything that indicates a fast or unrestricted speed."
   },
   "psicash#pane-speed-port-limits-body": {
