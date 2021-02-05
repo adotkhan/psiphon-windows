@@ -6982,7 +6982,7 @@ body[dir="rtl"] #psicash-block > div .psicash-title-balance .psicash-balance-del
   border-bottom-right-radius: 10px;
 }
 #psicash-block > div .psicash-corner-cluster .psicash-corner-cluster-item.label {
-  white-space: initial;
+  white-space: normal;
   padding: 0.7em;
   font-size: 1em;
   line-height: 1.2em;
@@ -6993,6 +6993,7 @@ body[dir="rtl"] #psicash-block > div .psicash-title-balance .psicash-balance-del
 #psicash-block > div .psicash-buy-speedboost {
   display: block;
   border-radius: 0;
+  padding: 4px 2px;
 }
 #psicash-block > div .psicash-buy-speedboost .psicash-buy-speedboost-label {
   text-transform: uppercase;
@@ -7315,11 +7316,11 @@ body[dir="rtl"] .speed-limit.badge img {
 }
 body[dir="ltr"] .global-alert {
   right: 0;
-  left: initial;
+  left: auto;
 }
 body[dir="rtl"] .global-alert {
   left: 0;
-  right: initial;
+  right: auto;
 }
 .z-behind {
   z-index: -2;

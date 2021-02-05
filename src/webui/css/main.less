@@ -1112,7 +1112,7 @@ img.coin {
         &.label {
           // Make labels larger and give them more space (this currently is for the
           // "Starting Speed Boost" label and may be too broad).
-          white-space: initial;
+          white-space: normal;
           padding: 0.7em;
           font-size: 1em;
           line-height: 1.2em;
@@ -1129,6 +1129,7 @@ img.coin {
     .psicash-buy-speedboost {
       display: block;
       border-radius: 0;
+      padding: 4px 2px; // normal .btn styling is `4px 12px`, but that causes us to wrap text before we'd like
 
       .psicash-buy-speedboost-label {
         text-transform: uppercase;
@@ -1520,11 +1521,11 @@ img.coin {
 
   body[dir="ltr"] & {
     right: 0;
-    left: initial;
+    left: auto;  // IE doesn't support "initial"
   }
   body[dir="rtl"] & {
     left: 0;
-    right: initial;
+    right: auto; // IE doesn't support "initial"
   }
 }
 
