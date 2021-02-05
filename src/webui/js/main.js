@@ -2449,8 +2449,8 @@
       $('.js-show-if-nsf').toggleClass('hidden', state !== PsiCashUIState.NSF_BALANCE);
       $('.js-hide-if-nsf').toggleClass('hidden', state === PsiCashUIState.NSF_BALANCE);
 
-      $('.psicash-username-container .js-psicash-account-signup').toggleClass('hidden', !!psicashData.account_username || loggedOut);
-      $('.psicash-username-container .psicash-username').text(psicashData.account_username).toggleClass('hidden', !psicashData.account_username);
+      $('.psicash-pane__user-and-balance__username-container .js-psicash-account-signup').toggleClass('hidden', !!psicashData.account_username || loggedOut);
+      $('.psicash-pane__user-and-balance__username-container .psicash-pane__user-and-balance__username-container__username').text(psicashData.account_username).toggleClass('hidden', !psicashData.account_username);
 
       if (psicashData.buy_psi_url) {
         $('a.psicash-buy-psi').prop('href', psicashData.buy_psi_url).removeClass('hidden');

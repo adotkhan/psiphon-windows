@@ -7038,23 +7038,42 @@ body[dir="rtl"] #psicash-block > div .psicash-title-balance .psicash-balance-del
   max-width: 600px;
   margin: auto;
 }
-body[dir="rtl"] #psicash-pane .psicash-pane__user-and-balance > div {
-  float: right;
+#psicash-pane .psicash-pane__user-and-balance {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 5px;
 }
 #psicash-pane .psicash-pane__user-and-balance .psicash-pane__user-and-balance__log-in-out-buttons {
+  white-space: nowrap;
   text-align: right;
 }
 body[dir="rtl"] #psicash-pane .psicash-pane__user-and-balance .psicash-pane__user-and-balance__log-in-out-buttons {
   text-align: left;
 }
-#psicash-pane .psicash-username-container {
+#psicash-pane .psicash-pane__user-and-balance .psicash-pane__user-and-balance__username-container {
+  width: 100%;
   font-weight: bold;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
 }
-#psicash-pane .psicash-username-container .psicash-username {
+#psicash-pane .psicash-pane__user-and-balance .psicash-pane__user-and-balance__username-container .psicash-pane__user-and-balance__username-container__username {
   font-size: 1.5em;
 }
-#psicash-pane .psicash-balance-row {
+#psicash-pane .psicash-pane__user-and-balance .psicash-pane__user-and-balance__balance {
   font-size: 1.5em;
+}
+#psicash-pane .psicash-pane__user-and-balance .psicash-pane__user-and-balance__balance .psicash-balance-coin {
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+}
+#psicash-pane .psicash-pane__user-and-balance .psicash-pane__user-and-balance__manage-web {
+  white-space: nowrap;
+  text-align: right;
+}
+body[dir="rtl"] #psicash-pane .psicash-pane__user-and-balance .psicash-pane__user-and-balance__manage-web {
+  text-align: left;
 }
 #psicash-pane .speed-boost-buttons .speed-boost-button {
   display: inline-block;

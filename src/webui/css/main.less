@@ -1191,35 +1191,54 @@ img.coin {
   }
 
   .psicash-pane__user-and-balance {
-    // This is a dirty RTL hack. Bootstrap uses "float:left" on span8, etc. in a fluid row,
-    // which results in layout _not_ being left-right reversed in RTL. If we try to globally
-    // override the BS styles, we end up breaking other layout (the Boost buttons in the
-    // pane are no longer centered, for example). So we're going to specifically target
-    // these instances to "fix", and in think about avoiding/changing our use of row-fluid
-    // in the future.
-    body[dir="rtl"] & > div {
-      float: right;
-    }
+    width: 100%;
+
+    // Put some space between the rows
+    border-collapse: separate;
+    border-spacing: 0 5px;
 
     .psicash-pane__user-and-balance__log-in-out-buttons {
+      white-space: nowrap;
       .text-right();
-
       body[dir="rtl"] & {
         .text-left();
       }
     }
-  }
 
-  .psicash-username-container {
-    font-weight: bold;
+    .psicash-pane__user-and-balance__username-container {
+      width: 100%;
+      font-weight: bold;
 
-    .psicash-username {
-      font-size: 1.5em;
+      // These need to be on the TD element in IE. This has the unfortunate effect of
+      // causing the "Create an account to protect your PsiCash" text to break-all as
+      // well, but the window shouldn't get that narrow (and hopefully the translations
+      // don't get that long).
+      -ms-word-break: break-all;
+      word-break: break-all;
+      word-break: break-word;
+
+      .psicash-pane__user-and-balance__username-container__username {
+        font-size: 1.5em;
+      }
     }
-  }
 
-  .psicash-balance-row {
-    font-size: 1.5em;
+    .psicash-pane__user-and-balance__balance {
+      font-size: 1.5em;
+
+      .psicash-balance-coin {
+        -ms-word-break: break-all;
+        word-break: break-all;
+        word-break: break-word;
+      }
+    }
+
+    .psicash-pane__user-and-balance__manage-web {
+      white-space: nowrap;
+      .text-right();
+      body[dir="rtl"] & {
+        .text-left();
+      }
+    }
   }
 
   .speed-boost-buttons {
