@@ -1862,7 +1862,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   var PsiCashStore = new Datastore({
     initDone: false,
     purchaseInProgress: false,
-    uiState: null
+    uiState: null,
+    logoutExpected: false
   }, 'PsiCashStore');
   $(function psicashInit() {
     // NOTE: "refresh" will not make a server request unless we're connected. If not
@@ -2197,13 +2198,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
     if (state === PsiCashUIState.ACCOUNT_LOGGED_OUT && oldPsiCashData && oldPsiCashData.has_tokens) {
-      displayCornerAlert($('#psicash-account-tokens-expired-alert')); // Log to UI and to diagnostics
+      // Either the user just logged out manually or our tokens expired
+      if (PsiCashStore.data.logoutExpected) {
+        displayCornerAlert($('#psicash-account-logged-out-alert')); // Log to UI and to diagnostics
 
-      addLog({
-        priority: 2,
-        message: 'Account logged out; probably due to expired tokens'
-      });
-      HtmlCtrlInterface_Log('Account logged out; probably due to expired tokens');
+        addLog({
+          priority: 2,
+          message: 'PsiCash account logged out'
+        });
+        HtmlCtrlInterface_Log('PsiCash account logged out; user initiated');
+      } else {
+        displayCornerAlert($('#psicash-account-tokens-expired-alert')); // Log to UI and to diagnostics
+
+        addLog({
+          priority: 2,
+          message: 'PsiCash account logged out; probably due to expired tokens'
+        });
+        HtmlCtrlInterface_Log('PsiCash account logged out; probably due to expired tokens');
+      }
+
+      PsiCashStore.set('logoutExpected', false);
     } // Speed Boost cannot function in L2TP/IPSec mode. We want to disabled controls and
     // indicate why we're in that state.
 
@@ -2960,6 +2974,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
 
     psicashUIWaitState(true, '#psicash-ui-overlay-logging-out');
+    PsiCashStore.set('logoutExpected', true);
     HtmlCtrlInterface_PsiCashCommand(new PsiCashCommandLogout()).then(function (result) {
       psicashUIWaitState(false, null);
 

@@ -2056,6 +2056,12 @@
        PsiCash login expired. Please log back in.
   </div>
 
+  <!-- Don't use the hidden class for this, otherwise the toggle() won't work. -->
+  <div id="psicash-account-logged-out-alert" class="alert alert-success global-alert" style="display:none"
+       data-i18n="psicash#alert#logged-out">
+       PsiCash account logout complete.
+  </div>
+
   <!-- General purpose modal dialog with optional technical details; typically used for errors -->
   <div class="modal fade" id="NoticeModal" tabindex="-1" role="dialog"
        aria-labelledby="NoticeModalTitle" aria-hidden="true" style="display: none;">

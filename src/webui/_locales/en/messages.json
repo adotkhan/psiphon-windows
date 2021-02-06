@@ -847,6 +847,10 @@
     "message": "PsiCash login expired. Please log back in.",
     "description": "An alert shown when the user's PsiCash account tokens expire. This is a normal occurrence (once per year), and the user needs to log into their PsiCash account again to continue to use it. The word 'PsiCash' must not be translated or transliterated."
   },
+  "psicash#alert#logged-out": {
+    "message": "PsiCash account logout complete.",
+    "description": "An alert shown when the user logs out of their PsiCash account. The word 'PsiCash' must not be translated or transliterated."
+  },
   "notice#disallowed-traffic-alert-title": {
     "message": "Upgrade your Psiphon connection",
     "description": "Title of modal error message shown to user when Psiphon disallows some non-web internet traffic. The user will be told to 'upgrade' their connection with Speed Boost (giving more speed and app compatibility). The word 'Psiphon' must not be translated or transliterated."

@@ -255,6 +255,10 @@
     "message": "[Şƥḗḗḗḗḓ Ɓǿǿǿǿşŧ şŧȧȧřŧḗḗḓ!]",
     "description": "A non-modal alert shown when a new Speed Boost has been activated. 'Speed Boost' is a reward that can be purchased with PsiCash credit. It provides unlimited network connection speed through Psiphon. Other words that can be used to help with translation are: 'turbo' (like cars), 'accelerate', 'warp speed', 'blast off', or anything that indicates a fast or unrestricted speed."
   },
+  "psicash#alert#logged-out": {
+    "message": "[ƤşīīƇȧȧşħ ȧȧƈƈǿǿŭŭƞŧ ŀǿǿɠǿǿŭŭŧ ƈǿǿḿƥŀḗḗŧḗḗ.]",
+    "description": "An alert shown when the user logs out of their PsiCash account. The word 'PsiCash' must not be translated or transliterated."
+  },
   "psicash#alert#tokens-expired": {
     "message": "[ƤşīīƇȧȧşħ ŀǿǿɠīīƞ ḗḗẋƥīīřḗḗḓ. Ƥŀḗḗȧȧşḗḗ ŀǿǿɠ ƀȧȧƈķ īīƞ.]",
     "description": "An alert shown when the user's PsiCash account tokens expire. This is a normal occurrence (once per year), and the user needs to log into their PsiCash account again to continue to use it. The word 'PsiCash' must not be translated or transliterated."
