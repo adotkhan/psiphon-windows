@@ -218,6 +218,10 @@
    * @param {boolean} andResizeContent Indicates whether a full resize should occur (default true)
    */
   function updateDpiScaling(dpiScaling, andResizeContent=true) {
+    // NOTE: This may not get processed often enough. If, say, a `.affix`
+    // element is added programmatically to the DOM, it won't get
+    // processed until/unless a DPI change occurs.
+
     if (updateDpiScaling.lastDpiScaling === dpiScaling) {
       // We only do this processing when the scaling actually changes.
       return;
@@ -247,7 +251,9 @@
 
     // Set the overall body scaling
     $('html').css({
+      '-ms-transform-origin': transformOrigin,
       'transform-origin': transformOrigin,
+      '-ms-transform': 'scale(' + dpiScaling + ')',
       'transform': 'scale(' + dpiScaling + ')',
       'width': (100.0 / dpiScaling).toFixed(1) + '%',
       'height': (100.0 / dpiScaling).toFixed(1) + '%'
@@ -264,14 +270,18 @@
       var scaledLeftMargin = 'calc(' + defaultLeftMargin + ' * ' + dpiScaling + ')';
       // Now apply the styles.
       $('.modal').css({
+        '-ms-transform-origin': transformOrigin,
         'transform-origin': transformOrigin,
+        '-ms-transform': 'scale(' + dpiScaling + ')',
         'transform': 'scale(' + dpiScaling + ')',
         'margin-left': scaledLeftMargin
       });
     }
 
     $('.global-alert').css({
+      '-ms-transform-origin': bottomRightTransformOrigin,
       'transform-origin': bottomRightTransformOrigin,
+      '-ms-transform': 'scale(' + dpiScaling + ')',
       'transform': 'scale(' + dpiScaling + ')'
     });
 
@@ -283,7 +293,9 @@
         .each(function() {
           var basePosition = $(this).position();
           $(this).css({
+            '-ms-transform-origin': transformOrigin,
             'transform-origin': transformOrigin,
+            '-ms-transform': 'scale(' + dpiScaling + ')',
             'transform': 'scale(' + dpiScaling + ')'
           });
           if (basePosition.top) {
@@ -330,7 +342,7 @@
             rule.media.mediaText__backup = rule.media.mediaText;
           }
 
-          const mediaTextSplit = rule.media.mediaText.split(' and ');
+          const mediaTextSplit = rule.media.mediaText__backup.split(' and ');
           for (let k = 0; k < mediaTextSplit.length; k++) {
             mediaTextSplit[k] = mediaTextSplit[k].replace(mqRegexp, function(match, pre, num, post) {
               return `${pre}${Math.round(num * dpiScaling)}${post}`;

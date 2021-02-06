@@ -5595,20 +5595,20 @@ a.badge:focus {
   .controls-row [class*="span"] + [class*="span"] {
     margin-left: 0;
   }
+  /* PSIPHON
+  HACK: These styles mess up on IE (but not Chrome). I can't figure out how to fix them,
+  and our window doesn't get small that we need them, so I'm disabling them.
   .modal {
     position: fixed;
-    top: 20px;
-    left: 20px;
+    top:   20px;
+    left:  20px;
     right: 20px;
     width: auto;
     margin: 0;
+    &.fade  { top: -100px; }
+    &.fade.in { top: 20px; }
   }
-  .modal.fade {
-    top: -100px;
-  }
-  .modal.fade.in {
-    top: 20px;
-  }
+  */
 }
 @media (max-width: 480px) {
   .nav-collapse {
@@ -6859,7 +6859,11 @@ body[dir="rtl"] #language-pane .language-item {
   /* IE7 inline-block hack */
   *zoom: 1;
   text-transform: uppercase;
+  -ms-transform: skew(-10deg) rotate(-7deg);
   transform: skew(-10deg) rotate(-7deg);
+  -webkit-transform-origin: right;
+  -moz-transform-origin: right;
+  -ms-transform-origin: right;
   transform-origin: right;
   display: table;
   margin: 1em auto 3em auto;

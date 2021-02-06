@@ -194,6 +194,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   function updateDpiScaling(dpiScaling) {
     var andResizeContent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
+    // NOTE: This may not get processed often enough. If, say, a `.affix`
+    // element is added programmatically to the DOM, it won't get
+    // processed until/unless a DPI change occurs.
     if (updateDpiScaling.lastDpiScaling === dpiScaling) {
       // We only do this processing when the scaling actually changes.
       return;
@@ -222,7 +225,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         bottomRightTransformOrigin = g_isRTL ? rtlBottomRightTransformOrigin : ltrBottomRightTransformOrigin; // Set the overall body scaling
 
     $('html').css({
+      '-ms-transform-origin': transformOrigin,
       'transform-origin': transformOrigin,
+      '-ms-transform': 'scale(' + dpiScaling + ')',
       'transform': 'scale(' + dpiScaling + ')',
       'width': (100.0 / dpiScaling).toFixed(1) + '%',
       'height': (100.0 / dpiScaling).toFixed(1) + '%'
@@ -238,14 +243,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var scaledLeftMargin = 'calc(' + defaultLeftMargin + ' * ' + dpiScaling + ')'; // Now apply the styles.
 
       $('.modal').css({
+        '-ms-transform-origin': transformOrigin,
         'transform-origin': transformOrigin,
+        '-ms-transform': 'scale(' + dpiScaling + ')',
         'transform': 'scale(' + dpiScaling + ')',
         'margin-left': scaledLeftMargin
       });
     }
 
     $('.global-alert').css({
+      '-ms-transform-origin': bottomRightTransformOrigin,
       'transform-origin': bottomRightTransformOrigin,
+      '-ms-transform': 'scale(' + dpiScaling + ')',
       'transform': 'scale(' + dpiScaling + ')'
     }); // Elements with the `affix` class are position:fixed and need to be adjusted separately
 
@@ -257,7 +266,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }).each(function () {
         var basePosition = $(this).position();
         $(this).css({
+          '-ms-transform-origin': transformOrigin,
           'transform-origin': transformOrigin,
+          '-ms-transform': 'scale(' + dpiScaling + ')',
           'transform': 'scale(' + dpiScaling + ')'
         });
 
@@ -305,7 +316,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             rule.media.mediaText__backup = rule.media.mediaText;
           }
 
-          var mediaTextSplit = rule.media.mediaText.split(' and ');
+          var mediaTextSplit = rule.media.mediaText__backup.split(' and ');
 
           for (var k = 0; k < mediaTextSplit.length; k++) {
             mediaTextSplit[k] = mediaTextSplit[k].replace(mqRegexp, function (match, pre, num, post) {
