@@ -1591,7 +1591,6 @@ hr.dotted {
 
 .paragraph-icon {
   font-size: 2.2em;
-  margin: 5px 10px 5px 0;
   font-weight: bold;
 
   &.paragraph-icon__warning {
@@ -1609,9 +1608,11 @@ hr.dotted {
 
   body[dir="ltr"] & {
     .pull-left();
+    margin: 5px 10px 10px 0;
   }
 
   body[dir="rtl"] & {
     .pull-right();
+    margin: 5px 0 10px 10px;
   }
 }
