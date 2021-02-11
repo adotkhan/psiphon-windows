@@ -1069,7 +1069,7 @@ void ConnectionManager::ActiveAuthorizationIDs(
     }
 
     // Our active purchase state changed, so update the UI.
-    UI_RefreshPsiCash("");
+    UI_RefreshPsiCash("", false);
 }
 
 // Makes a thread-safe copy of m_currentSessionInfo

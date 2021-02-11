@@ -1717,10 +1717,12 @@ nlohmann::json MakeRefreshPsiCashPayload() {
 
 // Exported function.
 // commandID may be empty if not needed.
-void UI_RefreshPsiCash(const string& commandID)
+void UI_RefreshPsiCash(const string& commandID, bool reconnect_required)
 {
     PsiCashMessage evt(PsiCashMessageType::REFRESH, commandID);
     evt.payload = MakeRefreshPsiCashPayload();
+
+    evt.payload["reconnect_required"] = reconnect_required;
 
     string jsonString;
     if (!evt.JSON(jsonString)) {
@@ -1756,17 +1758,21 @@ bool HandlePsiCashCommand(const string& jsonString)
             my_print(NOT_SENSITIVE, true, _T("%s: hard PsiCash::RefreshState because %S"), __TFUNCTION__, json["reason"].asCString());
 
             // We're connected, so ask the server for fresh info
-            psicash::Lib::_().RefreshState([commandID](psicash::error::Result<psicash::Status> result)
+            psicash::Lib::_().RefreshState([commandID](psicash::error::Result<psicash::PsiCash::RefreshStateResponse> result)
             {
                 // NOTE: This callback is (likely) _not_ on the same thread as the original call.
 
-                if (!result) {
+                bool reconnect_required = false;
+                if (result) {
+                    reconnect_required = result->reconnect_required;
+                }
+                else {
                     my_print(NOT_SENSITIVE, true, _T("%s: PsiCash::RefreshState failed: %S"), __TFUNCTION__, result.error().ToString().c_str());
                 }
 
                 // Refreshing the UI regardless of request result, as there might still
                 // good data cached locally.
-                UI_RefreshPsiCash(commandID);
+                UI_RefreshPsiCash(commandID, reconnect_required);
             });
         }
         else
@@ -1774,7 +1780,7 @@ bool HandlePsiCashCommand(const string& jsonString)
             my_print(NOT_SENSITIVE, true, _T("%s: soft PsiCash::RefreshState because %S"), __TFUNCTION__, json["reason"].asCString());
 
             // Use locally cached info for the refresh.
-            UI_RefreshPsiCash(commandID);
+            UI_RefreshPsiCash(commandID, false);
         }
     }
     else if (json["command"] == "purchase")
@@ -1853,7 +1859,7 @@ bool HandlePsiCashCommand(const string& jsonString)
     else if (json["command"] == "logout")
     {
         psicash::Lib::_().AccountLogout(
-            [commandID](psicash::error::Error err) {
+            [commandID](psicash::error::Result<psicash::PsiCash::AccountLogoutResponse> result) {
                 // NOTE: This callback is (likely) _not_ on the same thread as the original call.
 
                 // Send the result through to the JS to sort out.
@@ -1861,14 +1867,16 @@ bool HandlePsiCashCommand(const string& jsonString)
                 PsiCashMessage evt(PsiCashMessageType::ACCOUNT_LOGOUT, commandID);
 
                 nlohmann::json jsonResult;
-                if (err)
+                if (!result)
                 {
-                    jsonResult["error"] = err.ToString();
+                    jsonResult["error"] = result.error().ToString();
                 }
                 else
                 {
                     jsonResult["error"] = nullptr;
+                    jsonResult["reconnect_required"] = result->reconnect_required;
                     jsonResult["refresh"] = MakeRefreshPsiCashPayload();
+
                 }
 
                 evt.payload = jsonResult;

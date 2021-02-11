@@ -1902,6 +1902,7 @@
   /**
    * The expected payload passed to HtmlCtrlInterface_PsiCashMessage when a refresh should be done.
    * @typedef {Object} PsiCashRefreshData
+   * @property {boolean} reconnect_required
    * @property {boolean} is_account
    * @property {boolean} has_tokens
    * @property {?string} account_username Will be set iff is_account is true and has_tokens is true
@@ -2228,55 +2229,20 @@
     const oldPsiCashData = g_PsiCashData;
 
     if (psicashData) {
-      let reconnectRequired = false; // TBD below
-
       if (g_PsiCashData) {
         // For later diagnostics, log if psicashData values changed
         if (!_.isNaN(psicashData.balance) && psicashData.balance !== g_PsiCashData.balance) {
           HtmlCtrlInterface_Log('PsiCash: balance change:', psicashData.balance - g_PsiCashData.balance);
         }
         // TODO: Log other changes? Kind of a hassle.
-
-        // We might need to reconnect, based on the new data. There are two possible reasons:
-        // 1. If there are new purchases with authorizations present -- possibly due to a
-        //    new Speed Boost purchase or login purchase retrieval, then we need to
-        //    reconnect to have the authorization(s) take effect.
-        // 2. If there were authorizations active, but our tokens just disappeared
-        //    (due logout or expiry).
-        // Note that we _don't_ need to reconnect when an authorization expires,
-        // as that is handled by tunnel-core/psiphond.
-        if (psicashData.purchases) {
-          for (let i = 0; i < psicashData.purchases.length; i++) {
-            const newPurchase = psicashData.purchases[i];
-            if (!newPurchase.authorization) {
-              continue;
-            }
-            if (!g_PsiCashData.purchases) {
-              DEBUG_LOG('psiCashUIUpdated: reconnect required due to new purchase authorization');
-              reconnectRequired = true;
-              break;
-            }
-            if (!g_PsiCashData.purchases.some((p) => p.id === newPurchase.id)) {
-              DEBUG_LOG('psiCashUIUpdated: reconnect required due to unmatched purchase authorization');
-              reconnectRequired = true;
-              break;
-            }
-          }
-        }
-        if (!psicashData.has_tokens &&
-            g_PsiCashData.has_tokens &&
-            g_PsiCashData.purchases &&
-            g_PsiCashData.purchases.some((p) => !!p.authorization)) {
-          DEBUG_LOG('psiCashUIUpdated: reconnect required due to loss of tokens');
-          reconnectRequired = true;
-        }
       }
 
       g_PsiCashData = psicashData;
 
-      if (reconnectRequired) {
-        // We'll continue with our UI update, but we need to reconnect to apply
-        // newly-arrived purchases.
+      if (psicashData.reconnect_required) {
+        // We'll continue with our UI update, but we need to reconnect deal with a change
+        // of purchase/token state.
+        HtmlCtrlInterface_Log('PsiCash::RefreshState indicates reconnect required');
         HtmlCtrlInterface_ReconnectTunnel(/*suppressHomePage=*/true);
       }
     }
@@ -3294,6 +3260,12 @@
           psiCashUIUpdater(result.refresh);
         }
 
+        if (result.reconnect_required) {
+          // An authorization is active on the tunnel and needs to be removed.
+          HtmlCtrlInterface_Log('PsiCash::AccountLogout indicates reconnect required');
+          HtmlCtrlInterface_ReconnectTunnel(/*suppressHomePage=*/true);
+        }
+
         if (result.error) {
           // Catastrophic failure. Show a modal error and hope the user can figure it out.
           showNoticeModal(
@@ -4152,6 +4124,7 @@
     }
 
     return {
+      reconnect_required: $('#debug-RefreshPsiCash-reconnectRequired')[0].checked,
       is_account: isAccount,
       account_username: accountUsername,
       has_tokens: hasTokens,
@@ -4343,6 +4316,7 @@
       msg.payload.error = 'debug error';
     }
     else {
+      msg.payload.reconnect_required = $('#debug-PsiCashLogout-reconnectRequired')[0].checked;
       msg.payload.refresh = makeTestRefreshPayload(undefined, true, false, null);
     }
 

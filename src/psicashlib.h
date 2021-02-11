@@ -41,7 +41,7 @@ public:
     /// Makes a RefreshState request.
     /// Network and callback will happen on a separate thread.
     void RefreshState(
-        std::function<void(error::Result<Status>)> callback);
+        std::function<void(error::Result<RefreshStateResponse>)> callback);
 
     /// Makes a NewExpiringPurchase request.
     /// Network and callback will happen on a separate thread.
@@ -61,7 +61,7 @@ public:
     /// Makes an AccountLogout request.
     /// Network and callback will happen on a separate thread.
     void AccountLogout(
-        std::function<void(error::Error)> callback);
+        std::function<void(error::Result<AccountLogoutResponse>)> callback);
 
 protected:
     /// If this returns true, the request has been made and requestTask has been moved.

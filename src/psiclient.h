@@ -55,4 +55,4 @@ void UI_Notice(const string& noticeID, const string& techInfo);
 void UI_RefreshSettings(const string& settingsJSON);
 
 // Refreshes the PsiCash-related info in the UI.
-void UI_RefreshPsiCash(const string& commandID);
+void UI_RefreshPsiCash(const string& commandID, bool reconnect_required);

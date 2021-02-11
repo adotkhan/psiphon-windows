@@ -1705,6 +1705,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   /**
    * The expected payload passed to HtmlCtrlInterface_PsiCashMessage when a refresh should be done.
    * @typedef {Object} PsiCashRefreshData
+   * @property {boolean} reconnect_required
    * @property {boolean} is_account
    * @property {boolean} has_tokens
    * @property {?string} account_username Will be set iff is_account is true and has_tokens is true
@@ -2032,72 +2033,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     var oldPsiCashData = g_PsiCashData;
 
     if (psicashData) {
-      var reconnectRequired = false; // TBD below
-
       if (g_PsiCashData) {
         // For later diagnostics, log if psicashData values changed
         if (!_.isNaN(psicashData.balance) && psicashData.balance !== g_PsiCashData.balance) {
           HtmlCtrlInterface_Log('PsiCash: balance change:', psicashData.balance - g_PsiCashData.balance);
         } // TODO: Log other changes? Kind of a hassle.
-        // We might need to reconnect, based on the new data. There are two possible reasons:
-        // 1. If there are new purchases with authorizations present -- possibly due to a
-        //    new Speed Boost purchase or login purchase retrieval, then we need to
-        //    reconnect to have the authorization(s) take effect.
-        // 2. If there were authorizations active, but our tokens just disappeared
-        //    (due logout or expiry).
-        // Note that we _don't_ need to reconnect when an authorization expires,
-        // as that is handled by tunnel-core/psiphond.
 
-
-        if (psicashData.purchases) {
-          var _loop2 = function _loop2(i) {
-            var newPurchase = psicashData.purchases[i];
-
-            if (!newPurchase.authorization) {
-              return "continue";
-            }
-
-            if (!g_PsiCashData.purchases) {
-              DEBUG_LOG('psiCashUIUpdated: reconnect required due to new purchase authorization');
-              reconnectRequired = true;
-              return "break";
-            }
-
-            if (!g_PsiCashData.purchases.some(function (p) {
-              return p.id === newPurchase.id;
-            })) {
-              DEBUG_LOG('psiCashUIUpdated: reconnect required due to unmatched purchase authorization');
-              reconnectRequired = true;
-              return "break";
-            }
-          };
-
-          _loop: for (var i = 0; i < psicashData.purchases.length; i++) {
-            var _ret = _loop2(i);
-
-            switch (_ret) {
-              case "continue":
-                continue;
-
-              case "break":
-                break _loop;
-            }
-          }
-        }
-
-        if (!psicashData.has_tokens && g_PsiCashData.has_tokens && g_PsiCashData.purchases && g_PsiCashData.purchases.some(function (p) {
-          return !!p.authorization;
-        })) {
-          DEBUG_LOG('psiCashUIUpdated: reconnect required due to loss of tokens');
-          reconnectRequired = true;
-        }
       }
 
       g_PsiCashData = psicashData;
 
-      if (reconnectRequired) {
-        // We'll continue with our UI update, but we need to reconnect to apply
-        // newly-arrived purchases.
+      if (psicashData.reconnect_required) {
+        // We'll continue with our UI update, but we need to reconnect deal with a change
+        // of purchase/token state.
+        HtmlCtrlInterface_Log('PsiCash::RefreshState indicates reconnect required');
         HtmlCtrlInterface_ReconnectTunnel(
         /*suppressHomePage=*/
         true);
@@ -2142,8 +2091,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     var state = PsiCashUIState.NSF_BALANCE; // DO NOT return early from this point. state must be updated in PsiCashStore.uiState.
 
     if (psicashData.purchase_prices) {
-      for (var _i = 0; _i < psicashData.purchase_prices.length; _i++) {
-        var pp = psicashData.purchase_prices[_i];
+      for (var i = 0; i < psicashData.purchase_prices.length; i++) {
+        var pp = psicashData.purchase_prices[i];
 
         if (pp['class'] === 'speed-boost' && pp.price <= psicashData.balance) {
           // We can afford at least one level of Speed Boost
@@ -2156,7 +2105,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     var millisOfSpeedBoostRemaining = 0;
 
     if (psicashData.purchases) {
-      for (var _i2 = 0; _i2 < psicashData.purchases.length; _i2++) {
+      for (var _i = 0; _i < psicashData.purchases.length; _i++) {
         // There are two different contexts/ways of checking for active Speed Boost.
         // **If we are connected**, then we rely on psiphond to decide that the
         // authorization is expired, which will result in tunnel-core reconnecting and a
@@ -2169,8 +2118,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         // until the user happens to connect and refresh PsiCash state.)
         // Note: We're making no special effort to check for multiple active Speed Boosts.
         // This should not happen, per server rules.
-        if (psicashData.purchases[_i2]['class'] === 'speed-boost') {
-          var localTimeExpiry = moment(psicashData.purchases[_i2].localTimeExpiry);
+        if (psicashData.purchases[_i]['class'] === 'speed-boost') {
+          var localTimeExpiry = moment(psicashData.purchases[_i].localTimeExpiry);
 
           if (g_lastState === 'connected' || localTimeExpiry.isAfter(moment())) {
             state = PsiCashUIState.ACTIVE_BOOST;
@@ -2300,8 +2249,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       $('a.js-psicash-account-management').prop('href', psicashData.account_management_url);
 
       if (psicashData.purchase_prices) {
-        for (var _i3 = 0; _i3 < psicashData.purchase_prices.length; _i3++) {
-          var _pp = psicashData.purchase_prices[_i3];
+        for (var _i2 = 0; _i2 < psicashData.purchase_prices.length; _i2++) {
+          var _pp = psicashData.purchase_prices[_i2];
 
           if (_pp['class'] === 'speed-boost') {
             $(".js-psicash-sb-price[data-distinguisher=\"".concat(_pp.distinguisher, "\"]")).text(formatPsi(parseInt(_pp.price)));
@@ -2981,6 +2930,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (result.refresh) {
         // The reponse supplied refresh data
         psiCashUIUpdater(result.refresh);
+      }
+
+      if (result.reconnect_required) {
+        // An authorization is active on the tunnel and needs to be removed.
+        HtmlCtrlInterface_Log('PsiCash::AccountLogout indicates reconnect required');
+        HtmlCtrlInterface_ReconnectTunnel(
+        /*suppressHomePage=*/
+        true);
       }
 
       if (result.error) {
@@ -3821,6 +3778,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
 
     return {
+      reconnect_required: $('#debug-RefreshPsiCash-reconnectRequired')[0].checked,
       is_account: isAccount,
       account_username: accountUsername,
       has_tokens: hasTokens,
@@ -4012,6 +3970,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     if (resp === 'error') {
       msg.payload.error = 'debug error';
     } else {
+      msg.payload.reconnect_required = $('#debug-PsiCashLogout-reconnectRequired')[0].checked;
       msg.payload.refresh = makeTestRefreshPayload(undefined, true, false, null);
     } // Pretend the request takes a while.
 
